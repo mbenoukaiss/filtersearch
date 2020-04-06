@@ -1,8 +1,9 @@
 {
     "name": "mbenoukaiss/filtersearch",
+    "type": "symfony-bundle",
     "description": "Provides a simple way to make advanced searches with filters combination in Symfony",
     "license": "MIT",
-    "type": "symfony-bundle",
+    "keywords": ["search", "filter", "advanced", "custom", "symfony", "bundle"],
     "authors": [
         {
             "name": "Marwane BENOU-KAÏSS",
@@ -10,7 +11,14 @@
         }
     ],
     "require": {
-        "php": "^7.1.3"
+        "php": "^7.2",
+        "symfony/config": "^4.4 || ^5.0",
+        "symfony/dependency-injection": "^4.4 || ^5.0",
+        "symfony/http-foundation": "^4.4 || ^5.0",
+        "symfony/http-kernel": "^4.4 || ^5.0",
+        "symfony/form": "^4.4 || ^5.0",
+        "doctrine/orm": "^2.6",
+        "twig/twig": "^3.0"
     },
     "autoload": {
         "psr-4": {
