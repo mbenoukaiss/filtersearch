@@ -26,7 +26,7 @@ class FilterSearchExtension extends Extension
 
         $container->setParameter('twig.form.resources', array_merge([
             '@FilterSearch/filter_search.html.twig',
-            '@FilterSearch/search_modules.html.twig',
+            '@FilterSearch/default_modules.html.twig',
         ], $container->getParameter('twig.form.resources')));
     }
 }

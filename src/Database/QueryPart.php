@@ -6,6 +6,12 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use RuntimeException;
 
+/**
+ * Query parts that will be appended to
+ * the query builder.
+ *
+ * @package FilterSearch\Database
+ */
 class QueryPart
 {
 

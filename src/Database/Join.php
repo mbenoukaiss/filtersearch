@@ -6,10 +6,11 @@ use Doctrine\ORM\QueryBuilder;
 
 /**
  * Represents a SQL join.
- * Provides two methods to create joins :
- * - Join::inner for inner joins
- * - Join::left for left joins
- * @package App\Form\Search
+ *
+ * @see Join::inner() for inner joins
+ * @see Join::left() for left joins
+ *
+ * @package FilterSearch\Database
  */
 class Join
 {

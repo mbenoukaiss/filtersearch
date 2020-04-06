@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * ];
  *```
  *
- * @package App\Form\Search
+ * @package FilterSearch\Form
  */
 class FilterType extends AbstractType
 {

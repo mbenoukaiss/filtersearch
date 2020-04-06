@@ -19,14 +19,14 @@ use Symfony\Component\Form\AbstractType;
  * for the Y value.
  *
  * Since a module is a form, it also needs its view.
- * The view should be defined in the
- * ̀form/search_modules.html.twig` file.
+ * The view should be defined in a twig `form_theme`
+ * file.
  * The name of the block is the name of the module
  * class in snake case suffixes with "_row".
  * The view of a class named PriceRangeModule will
  * thus be "price_range_module_row".
  *
- * @package App\Form\Search
+ * @package FilterSearch\Modules
  */
 abstract class AbstractModule extends AbstractType
 {

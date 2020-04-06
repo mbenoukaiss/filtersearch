@@ -9,6 +9,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+/**
+ * A module that allows searching for values
+ * between two other values or greater/lesser
+ * than a another value.
+ *
+ * @package FilterSearch\Modules
+ */
 abstract class NumberModule extends AbstractModule
 {
 
@@ -57,9 +64,23 @@ abstract class NumberModule extends AbstractModule
         }
     }
 
-    protected abstract function extendQueryWithMin(QueryPart $qp, $min);
+    /**
+     * Extends the query part when the min value
+     * is given.
+     *
+     * @param QueryPart $qp The query part
+     * @param int $min The minimum value
+     */
+    protected abstract function extendQueryWithMin(QueryPart $qp, $min): void;
 
-    protected abstract function extendQueryWithMax(QueryPart $qp, $max);
+    /**
+     * Extends the query part when the max value
+     * is given.
+     *
+     * @param QueryPart $qp The query part
+     * @param int $max The maximum value
+     */
+    protected abstract function extendQueryWithMax(QueryPart $qp, $max): void;
 
     public function getBlockPrefix()
     {

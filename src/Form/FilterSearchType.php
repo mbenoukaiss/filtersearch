@@ -21,10 +21,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * when this form is modified.
  *
  * The template for this form is in the
- * `templates/form/filter_search.html.twig`
- * file.
+ * `views/filter_search.html.twig` file.
  *
- * @package App\Form\Search
+ * @package FilterSearch\Form
  */
 class FilterSearchType extends AbstractType
 {
@@ -105,6 +104,5 @@ class FilterSearchType extends AbstractType
         $resolver->setDefault("csrf_protection", false);
         $resolver->setRequired(["text_module", "modules", "query_builder"]);
     }
-
 
 }
