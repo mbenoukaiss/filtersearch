@@ -24,18 +24,19 @@ abstract class NumberModule extends AbstractModule
         $builder
             ->add("comparison", ChoiceType::class, [
                 "choices" => [
-                    "between" => "between",
-                    "greater than" => "greater",
-                    "lesser than" => "lesser"
+                    "between" => "in",
+                    "equal to" => "eq",
+                    "greater than" => "gte",
+                    "lesser than" => "lte",
                 ],
                 "empty_data" => "between"
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
             $form = $event->getForm();
-            $comparison = isset($event->getData()["comparison"]) ? $event->getData()["comparison"] : "between";
+            $comparison = isset($event->getData()["comparison"]) ? $event->getData()["comparison"] : "in";
 
-            if($comparison == "between" || $comparison == "greater") {
+            if($comparison == "in" || $comparison == "gte") {
                 $form->add("min", NumberType::class, [
                     "attr" => [
                         "placeholder" => "minimum value"
@@ -43,10 +44,18 @@ abstract class NumberModule extends AbstractModule
                 ]);
             }
 
-            if($comparison == "between" || $comparison == "lesser") {
+            if($comparison == "in" || $comparison == "lte") {
                 $form->add("max", NumberType::class, [
                     "attr" => [
                         "placeholder" => "maximum value"
+                    ]
+                ]);
+            }
+
+            if($comparison == "eq") {
+                $form->add("eq", NumberType::class, [
+                    "attr" => [
+                        "placeholder" => "value"
                     ]
                 ]);
             }
@@ -55,6 +64,10 @@ abstract class NumberModule extends AbstractModule
 
     public function extendQuery(QueryPart $qp, array $data): void
     {
+        if(isset($data["eq"])) {
+            $this->extendQueryWithEqual($qp, $data["eq"]);
+        }
+
         if(isset($data["min"])) {
             $this->extendQueryWithMin($qp, $data["min"]);
         }
@@ -81,6 +94,15 @@ abstract class NumberModule extends AbstractModule
      * @param int $max The maximum value
      */
     protected abstract function extendQueryWithMax(QueryPart $qp, $max): void;
+
+    /**
+     * Extends the query part when the value
+     * should be equal to the given value.
+     *
+     * @param QueryPart $qp The query part
+     * @param int $value The value to compare with
+     */
+    protected abstract function extendQueryWithEqual(QueryPart $qp, $value): void;
 
     public function getBlockPrefix()
     {

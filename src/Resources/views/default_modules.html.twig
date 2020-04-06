@@ -7,5 +7,7 @@
         {{ form_widget(form.min) }}
     {% elseif form.max is defined %}
         {{ form_widget(form.max) }}
+    {% elseif form.eq is defined %}
+        {{ form_widget(form.eq) }}
     {% endif %}
 {% endblock %}
