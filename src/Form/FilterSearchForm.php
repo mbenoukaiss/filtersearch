@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Wraps a filter search from type.
  *
- * @package App\Form\Search
+ * @package FilterSearch\Form
  */
 class FilterSearchForm
 {
@@ -43,25 +43,29 @@ class FilterSearchForm
     }
 
     /**
-     * Returns whether the form is submitted.
+     * Returns whether the submitted request is a
+     * real form submission or an AJAX call to
+     * update the form structure.
      *
-     * In order to refresh the form's fields (when
-     * selecting a different module for example)
-     * the form is submitted through an AJAX call.
-     * Calling this function when the request
-     * is an AJAX call will return false even if
-     * Symfony's base FormInterface::isSubmitted
-     * would return true.
+     * @return bool
+     */
+    public function isStructureUpdate(): bool {
+        if(!$this->request)
+            throw new RuntimeException("Call to FilterSearch::isStructureUpdate requires a call to FilterSearch::handleRequest before");
+
+        return $this->request->query->get("__form_update", false);
+    }
+
+    /**
+     * Returns whether the form is submitted.
      *
      * @return bool
      */
     public function isSubmitted(): bool {
         if(!$this->request)
-            throw new RuntimeException("Call to AdvancedSearch::isSubmitted requires a call to AdvancedSearch::handleRequest before");
+            throw new RuntimeException("Call to FilterSearch::isSubmitted requires a call to FilterSearch::handleRequest before");
 
-        //check that the request was a real form submission and not just
-        //a submission to update the form dynamically
-        return !$this->request->query->get("__form_update", false) && $this->form->isSubmitted();
+        return $this->form->isSubmitted();
     }
 
     /**
@@ -71,7 +75,7 @@ class FilterSearchForm
      */
     public function isValid(): bool {
         if(!$this->request)
-            throw new RuntimeException("Call to AdvancedSearch::isValid requires a call to AdvancedSearch::handleRequest before");
+            throw new RuntimeException("Call to FilterSearch::isValid requires a call to FilterSearch::handleRequest before");
 
         return $this->form->isValid();
     }
