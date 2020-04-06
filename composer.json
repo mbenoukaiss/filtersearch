@@ -1,6 +1,6 @@
 {
     "name": "mbenoukaiss/filtersearch",
-    "description": "Provides a simple way to make advanced searches with filters combination",
+    "description": "Provides a simple way to make advanced searches with filters combination in Symfony",
     "license": "MIT",
     "type": "symfony-bundle",
     "authors": [
