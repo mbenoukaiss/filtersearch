@@ -1,0 +1,141 @@
+{% macro printFilterRow(form) %}
+    <div class="filter">
+        {{ form_widget(form.type, {'attr': {'class': 'type-select causes-update'}}) }}
+
+        <div class="module">
+            {% if form.module is defined %}
+                {{ form_row(form.module) }}
+            {% endif %}
+        </div>
+
+        <button class="btn btn-danger remove-filter" type="button">&times;</button>
+    </div>
+{% endmacro %}
+
+{% block filter_search_row %}
+    {% import _self as filter_search_macros %}
+
+    <div class="row">
+        <div class="col-lg-7 col-xs-7">
+            {{ form_row(form.text) }}
+        </div>
+        <div class="col-lg-3 col-xs-5">
+            <button class="btn btn-default btn-block show-filtered" type="button" style="margin-bottom:10px">
+                Advanced search <i class="fas fa-caret-down"></i>
+            </button>
+        </div>
+        <div class="col-lg-2 col-xs-12">
+            <button class="btn btn-primary btn-block">Search</button>
+        </div>
+    </div>
+
+    <div class="filter-search" style="display:none">
+        <div class="row">
+            <div class="col-lg-10 col-md-9 col-xs-8 module">
+                <span>Search elements matching</span> {{ form_widget(form.match) }} <span>of the following filters</span>
+            </div>
+            <div class="col-lg-2 col-md-3 col-xs-4">
+                <button class="btn btn-default btn-block add-filter" type="button">Add filter</button>
+            </div>
+        </div>
+
+        <div data-prototype="{{ filter_search_macros.printFilterRow(form.filters.vars.prototype) | e('html_attr') }}">
+            <div class="filters">
+                {% for filter in form.filters %}
+                    {{ filter_search_macros.printFilterRow(filter) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden">{{ form_row(form.filters) }}</div>
+
+    <script>
+        {% set form_selector = 'form[name="' ~ form.vars.name ~ '"]' %}
+
+        window.addEventListener("load", function () {
+            var form = $('{{ form_selector | raw }}');
+            let container = $('{{ form_selector | raw }} .filters');
+            let index = {{ form.filters | length }};
+
+            $('.show-filtered').click(function() {
+                $(this).parent().parent().parent().find(".filter-search").toggle();
+            });
+
+            /// Add a filter to the search
+            function addFilter(container, index) {
+                let new_filter = $(container.parent().data('prototype').replace(/__filter_name__/g, index));
+                container.append(new_filter);
+            }
+
+            /// Remove a filter from the search
+            function removeFilter(container, self) {
+                self.parent().remove()
+            }
+
+            /// Registers all the necessary events to make
+            /// the form work.
+            function setupEvents() {
+                $('{{ form_selector | raw }} .datetimepicker').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm'
+                });
+
+                $('{{ form_selector | raw }} .datepicker').datetimepicker({
+                    format: 'DD/MM/YYYY'
+                });
+
+                $('.add-filter').off("click").click(function () {
+                    addFilter(container, index++);
+                    setupEvents();
+                });
+
+                $('.remove-filter').off("click").click(function () {
+                    removeFilter(container, $(this));
+                });
+
+                $('{{ form_selector | raw }} select.causes-update').off("change").change(function () {
+                    let selector = $(this);
+                    let name, module;
+
+                    //find the module box, which is the one that will be replaced by the form submission
+                    if(selector.parents(".module").length) { //if it's contained in a module
+                        name = selector.parents(".filter").find("select").attr("name");
+                        module = selector.parents(".module");
+                    } else { //else it's the filter selector
+                        name = selector.attr("name");
+                        module = selector.siblings().filter(".module");
+                    }
+
+                    let url = new URL(window.location.href);
+
+                    //necessary for deleting params while iterating
+                    let copied_url = new URL(window.location.href);
+
+                    //remove any data from previous form submissions
+                    //to avoid conflicts with the newly sent form
+                    for(let name of copied_url.searchParams.keys()) {
+                        if(name.startsWith("{{ form.vars.name }}")) {
+                            url.searchParams.delete(name);
+                        }
+                    }
+
+                    //add new form data
+                    for (let data of form.serializeArray()) {
+                        url.searchParams.set(data.name, data.value);
+                    }
+
+                    url.searchParams.set("__form_update", "1");
+
+                    $.get(url, function (response) {
+                        let new_form = $(response).find('select[name="' + name + '"]').parent().find(".module");
+                        module.replaceWith(new_form);
+
+                        setupEvents();
+                    });
+                });
+            }
+
+            setupEvents();
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% block number_module_row %}
+    <span>is</span> {{ form_widget(form.comparison, {'attr': {'class': 'causes-update'}}) }}
+
+    {% if form.min is defined and form.max is defined %}
+        {{ form_widget(form.min) }} <span>and</span> {{ form_widget(form.max) }}
+    {% elseif form.min is defined %}
+        {{ form_widget(form.min) }}
+    {% elseif form.max is defined %}
+        {{ form_widget(form.max) }}
+    {% endif %}
+{% endblock %}
