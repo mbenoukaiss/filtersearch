@@ -12,29 +12,28 @@
     </div>
 {% endmacro %}
 
-{% block filter_search_row %}
-    {% import _self as filter_search_macros %}
-
+{% block filter_search_header %}
     <div class="row">
-        <div class="col-lg-7 col-xs-7">
+        <div class="col-lg-10 col-xs-7">
             {{ form_row(form.text) }}
         </div>
-        <div class="col-lg-3 col-xs-5">
-            <button class="btn btn-default btn-block show-filtered" type="button" style="margin-bottom:10px">
-                Advanced search <i class="fas fa-caret-down"></i>
-            </button>
-        </div>
-        <div class="col-lg-2 col-xs-12">
+        <div class="col-lg-2 col-xs-5">
             <button class="btn btn-primary btn-block">Search</button>
         </div>
     </div>
+{% endblock %}
 
-    <div class="filter-search" style="display:none">
+{% block filter_search_row %}
+    {% import _self as filter_search_macros %}
+
+    {{ block('filter_search_header') }}
+
+    <div class="filter-search">
         <div class="row">
-            <div class="col-lg-10 col-md-9 col-xs-8 module">
+            <div class="col-lg-10 col-md-9 col-xs-12 module">
                 <span>Search elements matching</span> {{ form_widget(form.match) }} <span>of the following filters</span>
             </div>
-            <div class="col-lg-2 col-md-3 col-xs-4">
+            <div class="col-lg-2 col-md-3 col-xs-12">
                 <button class="btn btn-default btn-block add-filter" type="button">Add filter</button>
             </div>
         </div>
@@ -48,7 +47,7 @@
         </div>
     </div>
 
-    <div class="hidden">{{ form_row(form.filters) }}</div>
+    <div style="display:none">{{ form_row(form.filters) }}</div>
 
     <script>
         {% set form_selector = 'form[name="' ~ form.vars.name ~ '"]' %}
@@ -57,10 +56,6 @@
             var form = $('{{ form_selector | raw }}');
             let container = $('{{ form_selector | raw }} .filters');
             let index = {{ form.filters | length }};
-
-            $('.show-filtered').click(function() {
-                $(this).parent().parent().parent().find(".filter-search").toggle();
-            });
 
             /// Add a filter to the search
             function addFilter(container, index) {

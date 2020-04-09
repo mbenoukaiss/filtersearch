@@ -52,7 +52,7 @@ class FilterSearchType extends AbstractType
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
             $form = $event->getForm();
-            $data = $event->getForm()->getData();
+            $data = $event->getData();
 
             $qb = $options["query_builder"];
             $joins = [];
