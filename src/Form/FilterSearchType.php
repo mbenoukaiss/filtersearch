@@ -60,16 +60,31 @@ class FilterSearchType extends AbstractType
             //retrieve the list of joins to make
             foreach($options["modules"] as $module) {
                 $moduleJoins = $module::getJoins();
+                $moduleGroups = $module::getGroups();
 
                 //if it's not an array, make it an array
                 if(!is_array($moduleJoins)) {
                     $moduleJoins = [$moduleJoins];
                 }
 
+                if(!is_array($moduleGroups)) {
+                    $moduleGroups = [$moduleGroups];
+                }
+
                 //adds the joins to the joins array using the alias as key
                 foreach($moduleJoins as $join) {
                     $joins[$join->getAlias()] = $join;
                 }
+
+                //add the group by to the query builder
+                foreach($moduleGroups as $group) {
+                    $group->extend($qb);
+                }
+            }
+
+            //take the list of joins from the text module
+            foreach($options["text_module"]::getJoins() as $join) {
+                $joins[$join->getAlias()] = $join;
             }
 
             //make the joins on the query builder

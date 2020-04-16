@@ -51,6 +51,9 @@ abstract class AbstractModule extends AbstractType
     public static function getJoins() {
         return [];
     }
+    public static function getGroups() {
+        return [];
+    }
 
     /**
      * The name of the modules which will be displayed
