@@ -30,60 +30,61 @@ class QueryPart
         $this->parameters = [];
     }
 
-    public function expr(): Expr {
+    public function expr(): Expr
+    {
         return new Expr();
     }
 
-    public function where($expr): self {
+    public function where($expr): self
+    {
         $this->where[] = $expr;
         return $this;
     }
 
-    public function having($expr): self {
+    public function having($expr): self
+    {
         $this->having[] = $expr;
         return $this;
     }
 
-    public function groupBy($expr): self {
+    public function groupBy($expr): self
+    {
         $this->group[] = $expr;
         return $this;
     }
 
-    public function orderBy($expr): self {
+    public function orderBy($expr): self
+    {
         $this->order[] = $expr;
         return $this;
     }
 
-    public function setParameter($name, $value): self {
+    public function setParameter($name, $value): self
+    {
         $this->parameters[$name] = $value;
         return $this;
     }
 
-    public function merge(QueryBuilder $qb, $mode) {
+    public function merge(QueryBuilder $qb, $mode)
+    {
         if($mode == "all") {
-            foreach($this->where as $expr) {
-                $qb->andWhere($expr);
-            }
+            if($this->where)
+                $qb->andWhere($qb->expr()->andX(...$this->where));
 
-            foreach($this->having as $expr) {
-                $qb->andHaving($expr);
-            }
+            if($this->having)
+                $qb->andHaving($qb->expr()->andX(...$this->having));
         } else if($mode == "any") {
-            foreach($this->where as $expr) {
-                $qb->orWhere($expr);
-            }
+            if($this->where)
+                $qb->orWhere($qb->expr()->andX(...$this->where));
 
-            foreach($this->having as $expr) {
-                $qb->orHaving($expr);
-            }
+            if($this->having)
+                $qb->orHaving($qb->expr()->andX(...$this->having));
         } else if($mode == "none") {
-            foreach($this->where as $expr) {
-                $qb->andWhere($qb->expr()->not($expr));
-            }
+            if($this->where)
+                $qb->andWhere($qb->expr()->not($qb->expr()->andX(...$this->where)));
 
-            foreach($this->having as $expr) {
-                $qb->andHaving($qb->expr()->not($expr));
-            }
+            if($this->having)
+                $qb->andHaving($qb->expr()->not($qb->expr()->andX(...$this->having)));
         } else {
             throw new RuntimeException("Unknown match mode: $mode");
         }

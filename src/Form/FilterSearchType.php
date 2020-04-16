@@ -58,7 +58,12 @@ class FilterSearchType extends AbstractType
             $joins = [];
 
             //retrieve the list of joins to make
-            foreach($options["modules"] as $module) {
+            foreach($data["filters"] as $filter) {
+                if(!$filter["type"])
+                    continue;
+
+                $module = $filter["type"];
+
                 $moduleJoins = $module::getJoins();
                 $moduleGroups = $module::getGroups();
 
