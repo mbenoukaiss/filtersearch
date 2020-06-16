@@ -72,7 +72,7 @@ abstract class MainModule extends AbstractType
     {
         $builder->add("search", TextType::class, [
             "attr" => [
-                "placeholder" => self::getPlaceholder()
+                "placeholder" => $this->getPlaceholder()
             ],
             "label" => false,
             "required" => false
