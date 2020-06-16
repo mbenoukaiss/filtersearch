@@ -5,30 +5,17 @@ namespace FilterSearch\Modules;
 use FilterSearch\Database\Join;
 use FilterSearch\Database\QueryPart;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Defines a search module that can be used in an
- * filter search type.
- * Search modules are small Symfony forms that help
- * the user narrow down his search on a specific
- * field of an entity.
- *
- * For example, a search module to find bookings
- * that have a price between X and Y would provide
- * two input fields, one for the X value and one
- * for the Y value.
- *
- * Since a module is a form, it also needs its view.
- * The view should be defined in a twig `form_theme`
- * file.
- * The name of the block is the name of the module
- * class in snake case suffixes with "_row".
- * The view of a class named PriceRangeModule will
- * thus be "price_range_module_row".
+ * The main search module which consists of a single
+ * text field. There can only be one main search
+ * module per form.
  *
  * @package FilterSearch\Modules
  */
-abstract class AbstractModule extends AbstractType
+abstract class MainModule extends AbstractType
 {
 
     /**
@@ -52,18 +39,19 @@ abstract class AbstractModule extends AbstractType
         return [];
     }
 
-    //TODO: write documentation
+    //TODO: documentation
     public static function getGroups() {
         return [];
     }
 
     /**
-     * The name of the modules which will be displayed
-     * to the user.
+     * The placeholder to display on the text field.
      *
-     * @return string Name of the module
+     * @return string|null Text field placeholder
      */
-    public static abstract function getName(): string;
+    public static function getPlaceholder() {
+        return null;
+    }
 
     /**
      * Extends the query builder with the data submitted
@@ -76,9 +64,20 @@ abstract class AbstractModule extends AbstractType
      * in the query builder.
      *
      * @param QueryPart $qp The query part
-     * @param array $data Submitted data
+     * @param string $search Submitted text search
      */
-    public abstract function extendQuery(QueryPart $qp, array $data): void;
+    public abstract function extendQuery(QueryPart $qp, string $search): void;
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add("search", TextType::class, [
+            "attr" => [
+                "placeholder" => self::getPlaceholder()
+            ],
+            "label" => false,
+            "required" => false
+        ]);
+    }
 
     /**
      * Generates a random alphabetic string that can be

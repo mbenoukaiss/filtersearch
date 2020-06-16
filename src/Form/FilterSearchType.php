@@ -39,7 +39,7 @@ class FilterSearchType extends AbstractType
                     "none" => "none"
                 ]
             ])
-            ->add("text", $options["text_module"])
+            ->add("text", $options["main_module"])
             ->add("filters", CollectionType::class, [
                 "entry_type" => FilterType::class,
                 "allow_add" => true,
@@ -88,7 +88,7 @@ class FilterSearchType extends AbstractType
             }
 
             //take the list of joins from the text module
-            foreach($options["text_module"]::getJoins() as $join) {
+            foreach($options["main_module"]::getJoins() as $join) {
                 $joins[$join->getAlias()] = $join;
             }
 
@@ -101,7 +101,9 @@ class FilterSearchType extends AbstractType
             $part = new QueryPart();
 
             $moduleType = $form->get("text")->getConfig()->getType()->getInnerType();
-            $moduleType->extendQuery($part, $data["text"]);
+            if($data["text"] && isset($data["text"]["search"])) {
+                $moduleType->extendQuery($part, $data["text"]["search"]);
+            }
 
             $part->merge($qb, $data["match"]);
 
@@ -122,7 +124,7 @@ class FilterSearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault("csrf_protection", false);
-        $resolver->setRequired(["text_module", "modules", "query_builder"]);
+        $resolver->setRequired(["main_module", "modules", "query_builder"]);
     }
 
 }
